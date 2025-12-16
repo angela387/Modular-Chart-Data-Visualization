@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Modular Chart Data Visualization</title>
+<style>
+  :root{--bg:#070a10;--text:#eef2ff;--muted:rgba(238,242,255,.72);--border:rgba(255,255,255,.10);--a:#3b82f6;--y:#FFD100;}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:
+    radial-gradient(1100px 700px at 12% 10%, rgba(59,130,246,.18), transparent 60%),
+    radial-gradient(900px 600px at 88% 20%, rgba(255,209,0,.10), transparent 55%),
+    linear-gradient(180deg,#04060b,var(--bg));color:var(--text);font-family:system-ui,Segoe UI,Roboto,Arial}
+  .stage{width:min(980px,92vw);padding:28px;border-radius:26px;border:1px solid var(--border);
+    background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));box-shadow:0 30px 90px rgba(0,0,0,.55);backdrop-filter:blur(10px)}
+  h1{margin:0 0 6px;font-size:22px}
+  .sub{margin:0 0 16px;color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:800}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:860px){.row{grid-template-columns:1fr}}
+  .card{border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.22);border-radius:22px;padding:18px}
+  .bar{height:10px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;margin-top:10px}
+  .fill{height:100%;width:0%;background:linear-gradient(90deg,var(--a),var(--y));border-radius:999px}
+  .kpi{display:flex;justify-content:space-between;align-items:center;font-weight:900}
+  .kpi small{color:var(--muted);font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="stage">
+  <h1>Modular Chart Data Visualization</h1>
+  <div class="sub">Lottie-style motion preview • modular KPI cards</div>
+
+  <div class="row" id="row"></div>
+</div>
+
+<script>
+  const data = [
+    {name:"Retention", val:72},
+    {name:"Engagement", val:58},
+    {name:"Revenue", val:81},
+    {name:"Conversion", val:46}
+  ];
+
+  const row = document.getElementById('row');
+
+  function card(item){
+    const el=document.createElement('div');
+    el.className="card";
+    el.innerHTML = `
+      <div class="kpi"><span>${item.name}</span><small>${item.val}%</small></div>
+      <div class="bar"><div class="fill"></div></div>
+      <div style="margin-top:10px;color:rgba(238,242,255,.72);font-size:12px;line-height:1.45">
+        Modular KPI module with animated fill for dashboard reporting.
+      </div>
+    `;
+    return el;
+  }
+
+  data.forEach(d=>row.appendChild(card(d)));
+
+  function animate(){
+    document.querySelectorAll('.fill').forEach((f,idx)=>{
+      const target=data[idx].val;
+      f.animate([{width:"0%"},{width: target+"%"}], {duration:900, easing:"cubic-bezier(.2,.9,.2,1)", fill:"forwards"});
+    });
+  }
+
+  animate();
+  setInterval(()=>{ // small looping variation to keep it moving
+    data.forEach(d=> d.val = Math.max(18, Math.min(92, d.val + (Math.random()*10-5))));
+    document.querySelectorAll('.kpi small').forEach((s,idx)=> s.textContent = Math.round(data[idx].val) + "%");
+    animate();
+  }, 2200);
+</script>
+</body>
+</html>
